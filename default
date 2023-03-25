@@ -1,0 +1,40 @@
+upstream gcsproxy {
+    server '127.0.0.1:8080';
+}
+
+server {
+    listen 8081;
+    server_name _;
+
+    # Logs
+    access_log off;
+    error_log /var/log/nginx/gcsproxy.error.log error;
+
+    if ($request_method !~ "GET|HEAD|PURGE") {
+        return 405;
+    }
+
+    location = /authorize_apikey {
+     internal;
+     if ($api_realm = "") {
+        return 403; # Forbidden
+     }
+     if ($http_x_apikey = "") {
+        return 401; # Unauthorized
+     }
+     return 204; # OK
+    }
+
+    location / {
+        proxy_pass http://gcsproxy$uri;
+        if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Headers "X-APIkey, Authorization";
+        }
+        satisfy any;
+        auth_request /authorize_apikey;
+        limit_except OPTIONS {
+            auth_basic "Restricted API ($api_realm)";
+            auth_basic_user_file /etc/nginx/htpasswd-api-add;
+        }
+    }
+}
