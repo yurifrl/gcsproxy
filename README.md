@@ -1,0 +1,65 @@
+# Riley's GCS Proxy
+
+This document provides instructions for running a docker container with `gcsproxy` and NGINX setup to proxy connections to `gcsproxy` requiring API key auth.
+
+## Architecture Diagram
+
+![./pics/gcsproxy.png](./pics/gcsproxy.png)
+
+## Prerequisites
+
+Before proceeding, ensure that you have the following:
+
+- Docker installed
+- GCP project with the necessary permissions to access the required GCS buckets
+- API key for NGINX authentication
+
+## Usage
+
+1. Clone/download the repository to your local machine:
+
+```bash
+git clone https://github.com/withriley/gcsproxy.git
+```
+
+1. Navigate to the cloned/downloaded directory:
+
+```bash
+cd gcsproxy
+```
+
+1. Build the docker container:
+
+```bash
+docker build -t gcsproxy .
+```
+
+1. Run the docker container:
+
+```bash
+docker run \
+-v "$HOME/.config/gcloud/application_default_credentials.json":/gcp/creds.json:ro \
+-p 8081:8081 \
+-e GOOGLE_APPLICATION_CREDENTIALS=/gcp/creds.json \
+-e API_KEY=<YOUR_API_KEY> \
+gcsproxy
+```
+
+where:
+
+- `"$HOME/.config/gcloud/application_default_credentials.json"` is the path to your GCP credentials file
+- `8081` is the port that NGINX will listen on
+- `GOOGLE_APPLICATION_CREDENTIALS=/gcp/creds.json` is the environment variable that `gcsproxy` will use to authenticate to GCP
+- `gcsproxy` is the name of the docker container
+- `API_KEY` is the API key that you will use to authenticate to NGINX
+
+To then connect to the bucket:
+
+```
+curl -X GET -H "X-APIkey: <YOUR_API_KEY>" http://localhost:8081/bucket-name/object-name
+
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
