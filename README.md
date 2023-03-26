@@ -4,6 +4,8 @@ This document provides instructions for running a docker container with `gcsprox
 
 ## Architecture Diagram
 
+An example of a potential use case for this setup is to proxy connections to a GCS bucket that is not publicly accessible. This can be done by running a docker container with `gcsproxy` and NGINX setup to proxy connections to `gcsproxy` requiring API key auth. The diagram below shows the architecture of this setup:
+
 ![./pics/gcsproxy.png](./pics/gcsproxy.png)
 
 ## Prerequisites
