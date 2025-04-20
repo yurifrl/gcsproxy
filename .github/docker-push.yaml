@@ -1,4 +1,4 @@
-name: GH Docker
+name: Docker Push
 
 on:
   push:
