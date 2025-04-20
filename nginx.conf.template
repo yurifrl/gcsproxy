@@ -11,11 +11,6 @@ events {
 
 http {
 
-        map $http_x_apikey $api_realm {
-            default "";
-            $API_KEY "aap_primary";
-        }
-
         ##
         # Basic Settings
         ##

@@ -4,7 +4,7 @@
 set -m
   
 # Start the primary process and put it in the background
-envsubst '${API_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+cp /etc/nginx/nginx.conf.template /etc/nginx/nginx.conf
 
 nginx
 # Start the helper process
